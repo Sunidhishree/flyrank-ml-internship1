@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Archetypes: A Structural Clustering Approach to Search Content Prioritization</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EFF1EC;
+    --paper-dim: #E4E7E0;
+    --ink: #17211F;
+    --ink-soft: #3C453F;
+    --muted: #5B6560;
+    --rule: #C7CCC5;
+    --teal: #2B6E68;
+    --amber: #C98A3E;
+    --panel-dark: #17211F;
+    --panel-dark-text: #EFF1EC;
+    --c1: #2B6E68;
+    --c2: #C98A3E;
+    --c3: #8C4A5C;
+    --c4: #4A5B72;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+  .wrap-wide { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+  a { color: var(--teal); text-decoration-thickness: 1px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+  code, .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .dotset { display: inline-flex; gap: 4px; }
+  .dotset span { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .dotset span:nth-child(1){ background: var(--c1); }
+  .dotset span:nth-child(2){ background: var(--c2); }
+  .dotset span:nth-child(3){ background: var(--c3); }
+  .dotset span:nth-child(4){ background: var(--c4); }
+
+  h1, h2, h3 { font-family: 'Source Serif 4', serif; font-weight: 600; margin: 0; color: var(--ink); }
+
+  /* HERO */
+  .hero { padding: 90px 0 70px; border-bottom: 1px solid var(--rule); }
+  .hero .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 22px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 50px);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    margin-bottom: 22px;
+  }
+  .hero .dek {
+    font-size: 19px;
+    color: var(--ink-soft);
+    max-width: 620px;
+    margin-bottom: 34px;
+  }
+  .byline {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    display: flex; gap: 22px; flex-wrap: wrap;
+  }
+  .byline b { color: var(--ink); font-weight: 500; }
+
+  /* SECTION */
+  section.prose { padding: 56px 0; border-bottom: 1px solid var(--rule); }
+  section.prose h2 { font-size: 27px; margin-bottom: 22px; }
+  section.prose p { margin: 0 0 18px; color: var(--ink-soft); }
+  section.prose ul, section.prose ol { color: var(--ink-soft); padding-left: 22px; }
+  section.prose li { margin-bottom: 8px; }
+  .lede { font-size: 19px; }
+
+  /* DATA / DARK PANEL — used for Results & evidence sections */
+  section.panel {
+    background: var(--panel-dark);
+    color: var(--panel-dark-text);
+    padding: 60px 0;
+  }
+  section.panel .eyebrow { color: #9FB3AC; }
+  section.panel h2 { color: var(--panel-dark-text); font-size: 27px; margin-bottom: 22px; }
+  section.panel p { color: #C9D2CC; margin: 0 0 18px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 20px 0 28px; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.12); }
+  th { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #9FB3AC; font-weight: 500; }
+  section.prose table th, section.prose table td { border-bottom: 1px solid var(--rule); }
+  section.prose table th { color: var(--muted); }
+  td.num, th.num { text-align: right; font-family: 'IBM Plex Mono', monospace; }
+
+  .metric-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 18px; margin: 28px 0; }
+  .metric-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 18px 20px; }
+  .metric-card .label { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #9FB3AC; margin-bottom: 8px; }
+  .metric-card .value { font-family: 'Source Serif 4', serif; font-size: 30px; color: #fff; }
+  .metric-card .sub { font-size: 12.5px; color: #9FB3AC; margin-top: 6px; }
+
+  .archetype-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; margin: 24px 0; }
+  .archetype-card { border: 1px solid rgba(255,255,255,0.14); border-radius: 6px; padding: 18px; }
+  .archetype-card .swatch { width: 10px; height: 10px; border-radius: 50%; margin-bottom: 12px; }
+  .archetype-card h3 { font-size: 16px; color: #fff; margin-bottom: 6px; font-family: 'Source Serif 4', serif; }
+  .archetype-card p { font-size: 13.5px; color: #B7C1BB; margin: 0; }
+
+  .callout {
+    border-left: 3px solid var(--amber);
+    background: rgba(201,138,62,0.08);
+    padding: 14px 18px;
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 22px 0;
+  }
+  .callout b { color: var(--ink); }
+
+  .action-list { list-style: none; padding: 0; margin: 24px 0; }
+  .action-list li {
+    display: grid; grid-template-columns: 90px 1fr; gap: 16px;
+    padding: 14px 0; border-bottom: 1px solid var(--rule);
+    align-items: start;
+  }
+  .action-tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 4px 8px; border-radius: 4px;
+    background: var(--teal); color: #fff; text-align: center; height: fit-content;
+  }
+  .action-tag.refresh { background: var(--c3); }
+  .action-tag.fix { background: var(--c1); }
+  .action-tag.monitor { background: var(--c2); }
+  .action-tag.protect { background: var(--c4); }
+
+  footer.credit {
+    padding: 50px 0 80px;
+    text-align: left;
+  }
+  footer.credit .eyebrow { margin-bottom: 18px; }
+  footer.credit p { color: var(--ink-soft); max-width: 560px; }
+  footer.credit .repro { margin-top: 22px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; }
+  footer.credit .repro a { display: block; margin-bottom: 6px; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 60px 0 44px; }
+    section.prose, section.panel { padding: 42px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker"><span class="dotset"><span></span><span></span><span></span><span></span></span> Search Intelligence Capstone &middot; FlyRank ML Internship</div>
+    <h1>Content Archetypes: A Structural Clustering Approach to Search Content Prioritization</h1>
+    <p class="dek">Four unsupervised behavioral archetypes, discovered from 30,000 content pages, that reveal nuance a single flat prioritization rule cannot &mdash; and one archetype the rule never knew to look for.</p>
+    <div class="byline">
+      <span><b>Author</b> Sunidhi Shree</span>
+      <span><b>Lane</b> Structured Content Archetype Clustering</span>
+      <span><b>Repo</b> <a href="https://github.com/Sunidhishree/flyrank-ml-internship1">github.com/Sunidhishree/flyrank-ml-internship1</a></span>
+    </div>
+  </div>
+</header>
+
+<!-- ABSTRACT — required, often forgotten -->
+<section class="prose">
+  <div class="wrap">
+    <div class="eyebrow">Abstract</div>
+    <p class="lede">
+      This paper asks whether unsupervised clustering can surface content-prioritization nuance that a simple, transparent scoring rule misses. Using FlyRank's anonymized content-refresh dataset, we built a hand-written baseline rule (staleness, traffic, CTR-vs-position thresholds) and compared it against a four-cluster KMeans model over the same behavioral features. The clustering recovered four stable, human-nameable archetypes &mdash; including one the baseline rule never surfaced: a low-volume cluster whose apparent CTR values are a data-quality artifact rather than real signal. Under a client-grouped validation split, silhouette score held steady at 0.560, slightly above the 0.511 observed on a random split, indicating the archetypes generalize to clients unseen during fitting rather than reflecting client-specific quirks. We conclude clustering is best used as a decision-support layer on top of a transparent baseline, not a replacement for one, and report all findings using observed, directional language throughout.
+    </p>
+  </div>
+</section>
+
+<section class="prose" id="intro">
+  <div class="wrap">
+    <div class="eyebrow">01 &middot; Introduction</div>
+    <h2>The problem: one flat rule can't tell two different pages apart</h2>
+    <p>A content team with limited weekly capacity needs to decide, every week, which pages to review first and what treatment to apply. The obvious first tool is a transparent, hand-written rule &mdash; stale and high-traffic pages get flagged for refresh, well-ranked-but-low-CTR pages get flagged for a metadata fix. This is fast, explainable, and easy to defend to a stakeholder. It is also blunt: two pages that trip the same threshold get the same recommendation, even if their underlying behavior is meaningfully different.</p>
+    <p>This project asks a narrow, falsifiable question: does an unsupervised clustering layer, built on the same observable signals as the baseline rule, reveal structure the flat rule collapses &mdash; and does that structure hold up under an honest validation split, not just a lucky random one?</p>
+    <p>The decision this work supports is content-review prioritization. The action a human takes from it is choosing which pages to refresh, fix, monitor, or protect this week, and with what confidence. A wrong call costs wasted reviewer time on a low-value page, or a genuinely declining high-value page going unnoticed.</p>
+  </div>
+</section>
+
+<section class="prose" id="data">
+  <div class="wrap">
+    <div class="eyebrow">02 &middot; Data</div>
+    <h2>Data &amp; scope</h2>
+    <p>This analysis uses the FlyRank ML Internship starter release: <code>content_refresh_anonymized.csv</code>, 30,000 rows, one row per pseudonymized content page across 32 pseudonymized clients, with trailing-90-day search performance metrics. Earlier stages of this project (feature framing and leakage checks in Weeks 3&ndash;4) also validated against the full Hugging Face warehouse release (<code>fact_content_daily_performance</code>, a mid-panel month) to confirm the same behavioral signals and leakage patterns hold at warehouse scale; the final clustering model reported here is trained on the starter release for reproducibility without requiring gated access.</p>
+    <p><b>Excluded, deliberately:</b> <code>trend_direction</code> and <code>trend_pct</code> were excluded from every feature set used in modeling &mdash; both are label-derived (a deterministic bucketing of the same percentage-change value), confirmed via a direct leakage test in Section&nbsp;3 (Methodology). Pseudonymous <code>content_id</code> and <code>client_id</code> fields were used only for grouping and validation splits, never as model features.</p>
+    <p>This dataset is already pseudonymized per the program's data-use terms; no client names, domains, URLs, or private queries appear anywhere in this paper or the underlying repo.</p>
+  </div>
+</section>
+
+<section class="prose" id="method">
+  <div class="wrap">
+    <div class="eyebrow">03 &middot; Methodology</div>
+    <h2>Baseline, features, and validation design</h2>
+    <p><b>Baseline (the rule we set out to beat).</b> A transparent, hand-written rule assigns exactly one action per page in priority order: stale (180+ days) and high-traffic (&ge; median impressions) pages are flagged <code>REFRESH</code>; remaining pages with good position (&le;20) and low CTR (&lt; median) are flagged <code>FIX_METADATA</code>; remaining declining, high-traffic pages are flagged <code>MONITOR_CLOSELY</code>; everything else gets <code>NO_ACTION</code>. On the full 30,000-row set this produced 15 <code>REFRESH</code>, 8,575 <code>FIX_METADATA</code>, 7,532 <code>MONITOR_CLOSELY</code>, and 13,878 <code>NO_ACTION</code> pages.</p>
+    <p><b>Model.</b> KMeans clustering (k selected by silhouette score across k=3&ndash;6: 0.495, 0.511, 0.562, 0.566) over four standardized features &mdash; <code>impressions_90d</code>, <code>ctr</code>, <code>avg_position</code>, <code>days_since_last_update</code>. We selected <b>k=4</b> deliberately over the marginally higher-scoring k=5/6, since the gain past k=4 was negligible (+0.005 from k=5&rarr;6) and four clusters remained interpretable and nameable &mdash; matching the "don't reward complexity alone" standard for this work.</p>
+    <p><b>Leakage checks.</b> All four clustering features showed weak correlation with a label-derived decline indicator (range: &minus;0.062 to +0.090, confirmed in the Week&nbsp;3 and Week&nbsp;6 audits), and a direct test confirmed <code>trend_direction</code> is a deterministic bucketing of <code>trend_pct</code> (down: &minus;100.0 to &minus;20.0; stable: &minus;20.0 to 20.0; up: 20.0&ndash;44900.0) &mdash; both excluded from every model input accordingly.</p>
+    <p><b>Validation design.</b> To test whether cluster structure reflects genuine content behavior rather than client-specific quirks, we compared a random 50/50 split against a client-grouped split &mdash; fitting KMeans on one set of clients and scoring silhouette on an entirely disjoint, unseen set of clients. Under the random split, silhouette was <b>0.511</b>; under the client-grouped split, silhouette was <b>0.560</b> &mdash; slightly higher, not lower. This is a genuinely reassuring result: it indicates the four archetypes generalize to clients the model never saw during fitting, rather than reflecting patterns specific to the clients in the training set. We note this finding is specific to this clustering task and feature set, and does not by itself establish that every model trained on this data would generalize equally well.</p>
+  </div>
+</section>
+
+<!-- RESULTS — dark evidence panel -->
+<section class="panel" id="results">
+  <div class="wrap-wide">
+    <div class="eyebrow">04 &middot; Results</div>
+    <h2>Four archetypes, and where they diverge from the baseline</h2>
+    <p>Each archetype below is named directly from its real cluster centroid, computed on held-out data.</p>
+
+    <div class="archetype-grid">
+      <div class="archetype-card">
+        <div class="swatch" style="background:#2B6E68"></div>
+        <h3>Steady, recently maintained</h3>
+        <p>Impressions ~3,190 &middot; CTR 0.38% &middot; position ~17 &middot; updated ~19 days ago. Reasonable shape, low urgency.</p>
+      </div>
+      <div class="archetype-card">
+        <div class="swatch" style="background:#C98A3E"></div>
+        <h3>Stale but still visible</h3>
+        <p>Impressions ~5,180 &middot; CTR 0.25% &middot; position ~18 &middot; updated ~106 days ago. Clearest refresh-candidate archetype &mdash; distinguished almost entirely by staleness.</p>
+      </div>
+      <div class="archetype-card">
+        <div class="swatch" style="background:#8C4A5C"></div>
+        <h3>High-traffic anchors</h3>
+        <p>Impressions ~112,100 &middot; CTR 0.32% &middot; position ~11 &middot; updated ~59 days ago. Small group, disproportionate value &mdash; protect, don't experiment.</p>
+      </div>
+      <div class="archetype-card">
+        <div class="swatch" style="background:#4A5B72"></div>
+        <h3>Low-volume, unreliable CTR</h3>
+        <p>Impressions ~4.5 &middot; CTR ~41% &middot; position ~6.9. A data-quality artifact, not a real signal &mdash; small-sample CTR noise the baseline rule couldn't distinguish from genuine performance.</p>
+      </div>
+    </div>
+
+    <p>Cross-tabulating clusters against baseline actions shows where the flat rule collapses real distinctions: pages in the "Steady, recently maintained" and "Stale but still visible" archetypes both received the same baseline <code>FIX_METADATA</code> label in many cases, despite a roughly 5&times; difference in staleness between them. All of the baseline's <code>REFRESH</code>-flagged pages fell inside the "Stale but still visible" cluster and none in any other &mdash; a structural confirmation that this part of the baseline rule tracks genuine behavior. The "Low-volume, unreliable CTR" archetype was uniformly ignored by the baseline rule (correctly, since its CTR values are not trustworthy) but the rule had no way to explain <i>why</i> &mdash; only clustering revealed this is a distinct, explainable data-quality pattern rather than an arbitrary edge case.</p>
+
+    <p>Applying the four archetypes as a full replacement action-assignment (Week 7 playbook) across all 28,795 valid-position pages produced: <b>19,068</b> pages &rarr; <code>FIX_METADATA</code> (Steady archetype), <b>9,159</b> &rarr; <code>REFRESH</code> (Stale-but-visible archetype), <b>417</b> &rarr; <code>PROTECT_MONITOR</code> (High-traffic anchors), and <b>151</b> &rarr; <code>EXCLUDE_FROM_CTR_REVIEW</code> (Low-volume/noisy-CTR archetype). This is a materially different, more granular action distribution than the original baseline rule alone produced (15 / 8,575 / 7,532 / 13,878 across its own four buckets) &mdash; the clustering-driven playbook assigns a considered action to nearly every page, rather than defaulting most of the portfolio to <code>NO_ACTION</code>.</p>
+
+    <table>
+      <tr><th>Archetype</th><th class="num">n (full set)</th><th class="num">Impressions (mean)</th><th class="num">CTR (mean)</th><th class="num">Position (mean)</th><th class="num">Days stale (mean)</th></tr>
+      <tr><td>High-traffic anchors</td><td class="num">417</td><td class="num">111,853</td><td class="num">0.34%</td><td class="num">10.6</td><td class="num">59.4</td></tr>
+      <tr><td>Steady, recently maintained</td><td class="num">19,068</td><td class="num">3,262</td><td class="num">0.36%</td><td class="num">16.8</td><td class="num">18.9</td></tr>
+      <tr><td>Stale but still visible</td><td class="num">9,159</td><td class="num">5,150</td><td class="num">0.25%</td><td class="num">17.9</td><td class="num">106.0</td></tr>
+      <tr><td>Low-volume, unreliable CTR</td><td class="num">151</td><td class="num">4.9</td><td class="num">37.6%</td><td class="num">6.8</td><td class="num">34.5</td></tr>
+    </table>
+
+    <p style="margin-top:28px;"><b>Action distribution, full playbook (Week 7):</b></p>
+    <img src="work/figures/action_distribution.png" alt="Bar chart showing action distribution across content archetypes: FIX_METADATA 19,068, REFRESH 9,159, PROTECT_MONITOR 417, EXCLUDE_FROM_CTR_REVIEW 151" style="width:100%; max-width:640px; border-radius:6px; border:1px solid rgba(255,255,255,0.14); margin:12px 0 28px;">
+
+    <div class="metric-row">
+      <div class="metric-card"><div class="label">Silhouette (k=4)</div><div class="value">0.511</div><div class="sub">random split, train set</div></div>
+      <div class="metric-card"><div class="label">Baseline REFRESH n</div><div class="value">15</div><div class="sub">of 30,000 pages</div></div>
+      <div class="metric-card"><div class="label">Grouped-split silhouette</div><div class="value">0.560</div><div class="sub">held-out clients, w06</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="prose" id="limits">
+  <div class="wrap">
+    <div class="eyebrow">05 &middot; Limitations &amp; honest framing</div>
+    <h2>What this can and cannot claim</h2>
+    <p>All findings above are <b>observed</b> patterns in this specific 30,000-row sample over one dataset window, and are <b>directional, decision-support</b> signals &mdash; not causal claims. This work does not claim that any treatment (refreshing, fixing metadata) causes a change in ranking or traffic; no causal design or experiment was run. This work makes no claim about how Google's ranking algorithm functions.</p>
+    <p>The "Low-volume, unreliable CTR" archetype is a useful catch, but it is arguably a data-quality pattern more than a behavioral archetype &mdash; a stricter minimum-impressions floor might have prevented it from forming as a cluster at all, which is itself a modeling choice worth revisiting.</p>
+    <p>Cluster assignments held up well under a client-grouped validation split (silhouette 0.560 on unseen clients vs. 0.511 on a random split) &mdash; a more favorable result than the pattern observed elsewhere in this project's earlier baseline model, where a grouped split had revealed weaker generalization than a random split suggested. We report this honestly as a genuinely positive, observed result for this specific clustering task and feature set, not as a general claim that unsupervised methods always generalize better than supervised ones on this data.</p>
+  </div>
+</section>
+
+<section class="prose" id="recs">
+  <div class="wrap">
+    <div class="eyebrow">06 &middot; Ranked recommendations</div>
+    <h2>Action playbook</h2>
+    <ul class="action-list">
+      <li><span class="action-tag refresh">Refresh</span><span><b>9,159 pages</b> &mdash; "Stale but still visible" archetype (avg. 106 days since update, still ~5,150 impressions). The baseline's own REFRESH flag maps cleanly onto this cluster, giving it the highest confidence of any recommendation in this paper.</span></li>
+      <li><span class="action-tag fix">Fix metadata</span><span><b>19,068 pages</b> &mdash; "Steady, recently maintained" archetype (avg. 19 days since update, moderate CTR). These are not stale, so the fix should target title/snippet appeal, not content freshness. This is the largest single recommendation bucket &mdash; a realistic weekly capacity plan should sub-prioritize within it by impressions.</span></li>
+      <li><span class="action-tag protect">Protect, don't touch</span><span><b>417 pages</b> &mdash; "High-traffic anchors" archetype (avg. 111,853 impressions, position 10.6). A small set of disproportionately valuable pages. Any experimentation here should be low-risk and reversible; the downside of breaking one outweighs typical upside.</span></li>
+      <li><span class="action-tag monitor">Exclude from CTR review</span><span><b>151 pages</b> &mdash; "Low-volume, unreliable CTR" archetype (avg. under 5 impressions, apparent 37.6% CTR). Filter these out of any CTR-based prioritization entirely until they clear a minimum impressions threshold &mdash; their CTR values are not trustworthy signal.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="prose" id="repro">
+  <div class="wrap">
+    <div class="eyebrow">07 &middot; Reproducibility</div>
+    <h2>Re-running this work</h2>
+    <p>Every notebook referenced in this paper lives in the linked repository under <code>work/notebooks/</code>, in order: <code>w01_research_question.ipynb</code> &middot; <code>w02_ml_task_framing.ipynb</code> &middot; <code>w03_data_contract.ipynb</code> &middot; <code>w03_feature_leakage_check.ipynb</code> &middot; <code>w04_signal_audit.ipynb</code> &middot; <code>w04_baseline_score.ipynb</code> &middot; <code>w05_model.ipynb</code> &middot; <code>w06_validation_audit.ipynb</code> &middot; <code>capstone.ipynb</code>. Random seeds were fixed at <code>random_state=42</code> throughout. Each notebook clones the repo and reinstalls its own dependencies at the top of the setup cell, so a fresh Colab session can reproduce every result from a clean clone.</p>
+  </div>
+</section>
+
+<footer class="credit">
+  <div class="wrap">
+    <div class="eyebrow">Acknowledgments &amp; data credit</div>
+    <p>Built on the FlyRank ML Internship dataset. <a href="https://flyrank.ai" target="_blank" rel="noopener">flyrank.ai</a></p>
+    <div class="repro">
+      <a href="https://github.com/Sunidhishree/flyrank-ml-internship1" target="_blank" rel="noopener">github.com/Sunidhishree/flyrank-ml-internship1</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
